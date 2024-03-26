@@ -1,19 +1,21 @@
 #### Preamble ####
-# Purpose: Simulates... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Simulates an analysis of selected pokemon's weaknesses and strengths
+# Author: Tracy Yang
+# Date: 11 February 2023
+# Contact: ycart.yang@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: -
+# Any other information needed?
 
 
 #### Workspace setup ####
 library(tidyverse)
-# [...UPDATE THIS...]
+
 
 #### Simulate data ####
-# [...ADD CODE HERE...]
 
-
-
+data <- 
+  tibble(
+    level = rnorm(n = 800, mean = 100, sd = 10) |> floor(),
+    weakness = sample(x = c("water", "ground", "fire"), size = 800, replace = TRUE)
+  )
