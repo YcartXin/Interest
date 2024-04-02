@@ -1,5 +1,5 @@
 ---
-title: "The Analysis of MLB Team Statistics between 2012 - 2018 on Predicting Games Won per Season ^[Code and data are available at: https://github.com/YcartXin/Analysis-of-Men-in-Saudi-Arabia-on-WWOH; Reproduction DOI: https://doi.org/10.48152/ssrp-1wa4-dk30]"
+title: "MLB Team Statistics between 2012 - 2018 on Predicting Games Won per Season ^[Code and data are available at: https://github.com/YcartXin/MLB_Team_Stats"
 author: 
   - Tracy Yang
 date: today
@@ -22,6 +22,8 @@ library(tidyverse)
 
 # Introduction
 
+Behind the entertaining personalities and eye-catching traditions of baseball is a game where teams and are meticulously crafted with calculation. Baseball's fascination with numbers persisted since its creation (Swhwarz, 2004). Runs scored have always been recorded to evaluate performance, while other statistics developed overtime into the complicated net of data that now reside upon the MLB official site (). However, a team's performance can differ greatly year to year. A team's last year wins are not often indicative of the coming season. Many factors play into the seasonal performance of a team including more unpredictable variables such as injuries, and luck. However, with the common narrative of baseball being a numbers game, we aim to estimate the impact of important statistics of a team on its games won per season, more specifically, the progressing 2024 season.
+
 You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
 
 The remainder of this paper is structured as follows. @sec-data....
@@ -30,8 +32,6 @@ We examine the Major League Baseball team data from 2012 to 2018 focusing on a t
 
 
 # Data {#sec-data}
-
-Some of our data is of penguins , from .
 
 
 Talk more about it.

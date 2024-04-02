@@ -1,8 +1,8 @@
-# Pokemon
+# Analysis of MLB Team Statistics on Predicting Games Won per Season
 
 ## Overview
 
-We examine the Major League Baseball team data from 2012 to 2018 focusing on a team's batting average (AVG), defensive efficiency ratio (DER), and earned run average (ERA) to predict the number of games a team would win out of 162 in a season. We estimate an Bayesian hierarchical model which explains their attributes based on their functionality.
+We examine the Major League Baseball team data from 2012 to 2018 focusing on a team's batting average (AVG), defensive efficiency ratio (DefEff), and earned run average (ERA) to predict the number of games a team would win out of 162 in a season. We estimate an Bayesian hierarchical model which explains their attributes based on their functionality.
 
 
 ## File Structure
