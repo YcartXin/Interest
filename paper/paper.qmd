@@ -4,7 +4,7 @@ author:
   - Tracy Yang
 date: today
 date-format: long
-abstract: "Using MLB key team statistics between 2000 and 2023, this paper investigates the outcome of the 2024 season using each team's current statistics on predicting their total wins out of 162 games. We also investigate the common conception that baseball is a numbers game by evaluating the predictability of wins that a team would obtain during a seasion from looking at their batting average (AVG), defensive efficiency ratio (DER), and earned run average (ERA)."
+abstract: "Using MLB key team statistics between 2000 and 2023, this paper investigates the outcome of the 2024 season using each team's current statistics on predicting their total wins out of 162 games. We also investigate the common conception that baseball is a numbers game by evaluating the predictability of wins that a team would obtain during a seasion from looking at their batting average (AVG), defensive efficiency ratio (DffEff), and earned run average (ERA)."
 format: 
   typst:
     toc: true
@@ -19,12 +19,17 @@ bibliography: references.bib
 library(tidyverse)
 ```
 
+\newpage
 
 # Introduction
 
 Behind the entertaining personalities and eye-catching traditions of baseball is a game where teams and are meticulously crafted with calculation. Baseball's fascination with numbers persisted since its creation (Swhwarz, 2004). Runs scored have always been recorded to evaluate performance, while other statistics developed overtime into the complicated net of data that now reside upon the MLB official site (XX). The term "sabermetrics" even developed to describe in specific baseball statistics (XX) However, a team's performance can differ greatly year to year. A team's last year wins are not often indicative of the coming season. Many factors play into the seasonal performance of a team including more unpredictable variables such as injuries, and luck. However, with the common narrative of baseball being a numbers game, we aim to estimate the impact of important statistics of a team on its games won per season, more specifically, the progressing 2024 season.
 
-Important statistics for a team in this paper is defined as the team's batting average (AVG), defensive efficiency ratio (DER), and earned run average (ERA). These three statistics each refer to an important aspect of a strong team: hitting, pitching, and fielding prospectively. The specifics of these indicators will be elaborated on in @sec-data. Many 2024 season predictions exist...
+Important statistics for a team in this paper is defined as the team's batting average (AVG), defensive efficiency ratio (DffEff), and earned run average (ERA). These three statistics each refer to an important aspect of a strong team: hitting, pitching, and fielding prospectively. The specifics of these indicators will be elaborated on in @sec-data. Among present research, 2024 season predictions exist, however, they mainly focus on the win for a game or series for betting purposes. This paper is unique in its approach to predict and investigates the predictability of overall seasonal wins for baseball teams.
+
+The rest of the paper is structured as follows. @sec-data (Data) will explain the source of the data used, its collection process, and the process of cleaning that led to the final data used as well as potential biases. @sec-model...
+
+The overall analysis shows...
 
 You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
 
@@ -40,7 +45,7 @@ And also planes. (You can change the height and width, but don't worry about doi
 
 
 
-# Model
+# Model {#sec-model}
 
 The goal of our modelling strategy is twofold. Firstly,...
 
@@ -83,9 +88,6 @@ Our results are summarized in .
 
 If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
 
-## Second discussion point
-
-## Third discussion point
 
 ## Weaknesses and next steps
 
