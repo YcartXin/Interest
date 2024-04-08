@@ -1,7 +1,7 @@
 #### Preamble ####
 # Purpose: Simulates the data sets of MLB with variables of interest (AVG, DffEff, ERA, W).
 # Author: Tracy Yang
-# Date: 2nd April 2023
+# Date: 2 April 2023
 # Contact: ycart.yang@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: -

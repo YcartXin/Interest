@@ -25,19 +25,15 @@ library(tidyverse)
 
 Behind the entertaining personalities and eye-catching traditions of baseball is a game where teams and are meticulously crafted with calculation. Baseball's fascination with numbers persisted since its creation (Swhwarz, 2004). Runs scored have always been recorded to evaluate performance, while other statistics developed overtime into the complicated net of data that now reside upon the MLB official site (XX). The term "sabermetrics" even developed to describe in specific baseball statistics (XX) However, a team's performance can differ greatly year to year. A team's last year wins are not often indicative of the coming season. Many factors play into the seasonal performance of a team including more unpredictable variables such as injuries, and luck. However, with the common narrative of baseball being a numbers game, we aim to estimate the impact of important statistics of a team on its games won per season, more specifically, the progressing 2024 season.
 
-Important statistics for a team in this paper is defined as the team's batting average (AVG), defensive efficiency ratio (DffEff), and earned run average (ERA). These three statistics each refer to an important aspect of a strong team: hitting, pitching, and fielding prospectively. The specifics of these indicators will be elaborated on in @sec-data. Among present research, 2024 season predictions exist, however, they mainly focus on the win for a game or series for betting purposes. This paper is unique in its approach to predict and investigates the predictability of overall seasonal wins for baseball teams.
+Important statistics for a team in this paper is defined as the team's batting average (AVG), defensive efficiency ratio (DffEff), and earned run average (ERA). These three statistics each refer to an important aspect of a strong team: hitting, pitching, and fielding prospectively, hence important indicators on the wins a team is predicted to earn in a season. The specifics of these indicators will be elaborated on in @sec-data. Among present research, 2024 season predictions exist, however, they mainly focus on the win for a game or series for betting purposes. This paper is unique in its approach to predict and investigates the predictability of overall seasonal wins for baseball teams.
 
-The rest of the paper is structured as follows. @sec-data (Data) will explain the source of the data used, its collection process, and the process of cleaning that led to the final data used as well as potential biases. @sec-model...
+The rest of the paper is structured as follows. @sec-data (Data) will explain the source of the data used, its collection process, and the process of cleaning that led to the final data used. The data section will also explore the potential biases the collected and final data may possess. @sec-model...
 
 The overall analysis shows...
-
-You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
-
 
 
 
 # Data {#sec-data}
-
 
 Talk more about it.
 

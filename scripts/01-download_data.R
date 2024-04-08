@@ -1,13 +1,11 @@
 #### Preamble ####
-# Purpose: Downloads and saves the data from Baseball Reference
+# Purpose: Downloads and saves the data from Baseball Reference.
 # Author: Tracy Yang
-# Date: 6th April 2024
+# Date: 6 April 2024
 # Contact: ycart.yang@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: -
 
-
-#### Workspace setup ####
 
 #### Download data ####
 # Team data downloaded from https://www.baseball-reference.com/leagues/.
