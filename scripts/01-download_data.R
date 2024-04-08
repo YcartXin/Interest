@@ -1,15 +1,13 @@
 #### Preamble ####
-# Purpose: Downloads and saves the data from [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Downloads and saves the data from Baseball Reference
+# Author: Tracy Yang
+# Date: 6th April 2024
+# Contact: ycart.yang@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: -
 
 
 #### Workspace setup ####
-
 
 #### Download data ####
 # Team data downloaded from https://www.baseball-reference.com/leagues/.

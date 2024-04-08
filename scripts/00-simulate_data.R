@@ -44,4 +44,4 @@ data_01 <-
 sim_data <- rbind(data_00, data_01)
 
 #Testing simulated data
-XX
+
