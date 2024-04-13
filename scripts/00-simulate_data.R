@@ -38,7 +38,7 @@ data_01 <-
     Team = sample(x = teams, size = 30, replace = FALSE),
     AVG = rnorm(n = 30, mean = 0.2, sd = 0.1),
     ERA = rnorm(n = 30, mean = 4, sd = 1),
-    DffEff = rnorm(n = 30, mean = 0.7, sd = 0.01),
+    DefEff = rnorm(n = 30, mean = 0.7, sd = 0.01),
     W = round(rnorm(n = 30, mean = 82, sd = 3))
   )
 
@@ -54,8 +54,8 @@ sim_data$AVG |> is.numeric()
 sim_data$AVG |> min() >= 0
 sim_data$ERA |> is.numeric()
 sim_data$ERA |> min() >= 0
-sim_data$DffEff |> is.numeric()
-sim_data$DffEff |> max() <= 1
+sim_data$DefEff |> is.numeric()
+sim_data$DefEff |> max() <= 1
 sim_data$W |> is.numeric()
 
 
