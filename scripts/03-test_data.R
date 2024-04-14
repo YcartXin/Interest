@@ -10,9 +10,10 @@
 #### Workspace setup ####
 library(tidyverse)
 library(here)
+library(arrow)
 
 #### Importing ####
-mlb_test <- read_csv("data/analysis_data/mlb_data.csv", show_col_types = FALSE)
+mlb_test <- read_parquet("data/analysis_data/mlb_data.parquet")
 
 
 #### Test data ####

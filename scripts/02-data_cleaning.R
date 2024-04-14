@@ -11,6 +11,7 @@
 library(tidyverse)
 library(dplyr)
 library(janitor)
+library(arrow)
 
 
 #### Clean data ####
@@ -73,7 +74,7 @@ data2010 <- cbind(b2010[1:30, c("Tm", "BA")], f2010[1:30, c("DefEff")], p2010[1:
 
 ## Combining yearly data ##
 mlb_10 <- rbind(data2000, data2001, data2002, data2003, data2004, data2005, 
-                data2006, data2007, data2008, data2009, data2010) |> clean_names()
+                data2006, data2007, data2008, data2009, data2010)
 
 ## Cleaning yearly data ##
 current <- c("Arizona Diamondbacks", "Atlanta Braves", "Baltimore Orioles", 
@@ -95,10 +96,13 @@ change <- c("AZ", "ATL", "BAL", "BOS", "CHC",
            "PHI", "PIT", "SD", "SF", "SEA",
            "STL", "TB", "TEX", "TOR", "WSH", 
            "WSH", "TB", "LAA", "LAA")
-mlb_10$tm <- ifelse(mlb_10$tm %in% current, 
-                  change[match(mlb_10$tm, current)], 
-                  mlb_10$tm)
+mlb_10 <- mlb_10 |>
+  mutate(Tm = case_when(
+    mlb_10$Tm %in% current ~ change[match(mlb_10$Tm, current)],
+    TRUE ~ Tm
+  ))
+
 mlb_data <- mlb_10
 
 #### Save data ####
-write_csv(mlb_data, "data/analysis_data/mlb_data.csv")
+write_parquet(mlb_data, "data/analysis_data/mlb_data.parquet")
