@@ -43,28 +43,79 @@ The overall analysis shows...
 
 # Data {#sec-data}
 
-The data used in this analysis of different statistics on MLB Teams are sourced from Sports Reference, more specifically, Baseball Reference (). The data available on Baseball Reference is gathered by many contributors through a variety of sources such as the Lahmen database, and much of older data is accessed from third-party websites such as Retrosheet (). Baseball Reference stores and manipulate the data gathered using MySQL (). The data sets used in this investigation focus on the team statistics of the 30 teams in MLB and span from 2000 to 2010. The data sets were downloaded separately for each year among the batting, pitching, and fielding data. They were then combined into the final data set during the cleaning process. This cleaning and analysis are carried out in **R** @R using packages **tidyverse** @tidyverse, **dplyr** , **ggplot2** @ggplot2, **knitr** @knitr, **here ** @here, **dplyr** @dplyr, **janitor** @janitor, **arrow** @arrow  XX.
+The data used in this analysis of different statistics on MLB Teams are sourced from Sports Reference, more specifically, Baseball Reference (). The data sets used in this investigation focus on the team statistics of the 30 teams in MLB and span from 2000 to 2010. The data sets were downloaded separately for each year among the batting, pitching, and fielding data. They were then combined into the final data set during the cleaning process. This cleaning and analysis are carried out in **R** @R using packages **tidyverse** @tidyverse, **dplyr** , **ggplot2** @ggplot2, **knitr** @knitr, **here ** @here, **dplyr** @dplyr, **janitor** @janitor, **arrow** @arrow  XX.
 
 ## Measurement and Collection
+The data available on Baseball Reference is gathered by many contributors through a variety of sources such as the Lahmen database, and much of older data is accessed from third-party websites such as Retrosheet (). Baseball Reference stores and manipulate the data gathered using MySQL (). A potential weakness in the data collection includes missing data for certain teams, especially for early seasons in the 19th century when statistics were not kept in database and are easily lost. However, this analysis uses recent season data between 2000 and 2010 which mitigates this concern.
+
 There are in total 33 raw data sets of MLB team statistics in the raw data folder for constructing the model, these are split into 11 years and 3 categories (batting, pitching, fielding) for each team of every year from 2000 to 2010. Among each category, one representative indicator is chosen to demonstrate the overall strength of that category and be included as a variable for predicting wins over a season. 
 
-The batting data in a year contains 29 variables detailing the overall offensive strength of hitters in each team. These variables include average runs per game or 2nd base reached over a season. Among these variables, we are interested in the batting average (AVG). AVG is calculated by total hits divided by total at-bats. Hits is defined by the number of times a batter strikes the ball into fair territory and reaches base, in the absence of an error or a fielder's choice (). AVG is a good indicator for offensive capabilities as it minimizes the impact of the pitcher by discounting walks and it is one of the universal tools to measure a hitter's success.
+The batting data in a year contains 29 variables detailing the overall offensive strength of hitters in each team. These variables include average runs per game or 2nd base reached over a season. Among these variables, we are interested in the batting average (**AVG**). AVG is calculated by total hits divided by total at-bats. Hits is defined by the number of times a batter strikes the ball into fair territory and reaches base, in the absence of an error or a fielder's choice (). AVG is a good indicator for offensive capabilities as it minimizes the impact of the pitcher by discounting walks and it is one of the universal tools to measure a hitter's success.
 
-The pitching data in a year contains 36 variables for each team detailing the bullpen's strength in initiating outs and preventing runs. Among variables in the data, we are interested in the Earned Run Average (ERA) calculated by 9 x earned runs/innings pitched (). This number indicates the average earned runs allowed per 9 innings, which is better for a team if lower. This indicator tests the fundamental purpose of pitchers in the bullpen as their goal is to prevent runs of the opposing team and accurately portrays the pitching ability of a team.
+The pitching data in a year contains 36 variables for each team detailing the bullpen's strength in initiating outs and preventing runs. Among variables in the data, we are interested in the Earned Run Average (**ERA**) calculated by 9 x earned runs/innings pitched (). This number indicates the average earned runs allowed per 9 innings, which is better for a team if lower. This indicator tests the fundamental purpose of pitchers in the bullpen as their goal is to prevent runs of the opposing team and accurately portrays the pitching ability of a team.
 
-The fielding data for each year contains 16 variables that details the defensive abilities of a team to get the hitter out after a ball is in play. The variable chosen to represent this ability is Defensive Efficiency (DefEff), calculated by 1 - (H^[H = Hit] + ROE^[ROE = Reached on Error, when a batter reaches base due to a defensive error] - HR^[HR = Home Run]) / (PA^[PA = Plate Appearance] - BB^[BB = Base on Balls, better known as a walk which happens when the pitcher receives 4 balls from the umpire] - SO^[SO = Strike Out, when the batter is out of play from three strikes from the umpire] - HBP^[HBP = Hit By Pitch, when a batter is struck directly by a pitch without swinging and is awarded a walk] - HR), which is the percentage of balls in play converted into outs (). This indicator estimates the ability of the catcher and fielders to efficiently prevent runs after a ball allows hitters to reach base and home.
+The fielding data for each year contains 16 variables that details the defensive abilities of a team to get the hitter out after a ball is in play. The variable chosen to represent this ability is Defensive Efficiency (**DefEff**), calculated by 1 - (H^[H = Hit] + ROE^[ROE = Reached on Error, when a batter reaches base due to a defensive error] - HR^[HR = Home Run]) / (PA^[PA = Plate Appearance] - BB^[BB = Base on Balls, better known as a walk which happens when the pitcher receives 4 balls from the umpire] - SO^[SO = Strike Out, when the batter is out of play from three strikes from the umpire] - HBP^[HBP = Hit By Pitch, when a batter is struck directly by a pitch without swinging and is awarded a walk] - HR), which is the percentage of balls in play converted into outs (). This indicator estimates the ability of the catcher and fielders to efficiently prevent runs after a ball allows hitters to reach base and home.
 
-## Data Exploration ##
 
-There are thirty data points per year as there are thirty teams in MLB. In the data used for this investigation, there are three necessary predictors: AVG, ERA, DefEff. Team names is necessary to identify teams throughout the years and the number of wins is imported in with the pitching data. XX shows a sample of the the cleaned data with 5 variables.
+## Cleaning and Exploration ##
+
+The cleaned data now contains 330 observations of 5 variables:
+
+- Team
+- Batting Average - hits over at bats
+- Defensive Efficiency - out rate after a ball is in play
+- Earned Run Average - average earned runs allowed per none innings
+- Wins
+
+There are thirty data points per year as there are thirty teams in MLB. The predictor variables are batting average, earned average, and defensive efficiency. Team names is necessary to identify teams throughout the years and the number of wins is imported in with the pitching data. @tbl-sample shows a sample of the the cleaned data with 5 variables.
 ```{r}
 #| echo: false
 #| label: tbl-sample
-#| tbl-cap: Sample of Cleaned MLB Prediction for Model Building
+#| tbl-cap: Sample of Cleaned MLB Prediction Data for Model Building
 mlb_data |> slice(1:5) |> kable()
 
 ```
 
+We can understand this data better by understanding the distribution of some of the variables as well as the summary statistics. For instance, we can understand the competitiveness of MLB by seeing the distribution of wins per season, whether the teams differ significantly by wins can help us analyze whether there is a significant disparity in the strengths of different teams. @fig-wins shows the distribution of the wins data of each team among 162 games in a season between 2000 to 2010.
+
+```{r}
+#| echo: false
+#| label: fig-wins
+#| fig-cap: Distribution of Wins of each Team in a MLB Season between 2000 - 2010
+
+mlb_data |>
+  ggplot(aes(x = W)) +
+  geom_histogram(binwidth =  5, fill = "steelblue", alpha = 0.9, color = "white") +
+  theme_minimal() +
+  labs(
+    x = "Wins",
+    y = "Number of occurrences"
+  )
+
+```
+We can also get a sense of the average strength of the a MLB team in terms of the predictors by looking at their summary data. This is shown in @tbl-summary.
+
+```{r}
+#| echo: false
+#| label: tbl-summary
+#| tbl-cap: Summary of Cleaned MLB Prediction Data for Model Building
+summary_stat <- mlb_data |>
+  summarize(
+    Statistic = "Mean",
+    BA = mean(BA, na.rm =TRUE),
+    DefEff = mean(DefEff, na.rm = TRUE),
+    ERA = mean(ERA, na.rm = TRUE))
+
+summary_stat <- summary_stat |> add_row(
+  Statistic = "Median",
+  BA = median(mlb_data$BA), 
+  DefEff = median(mlb_data$DefEff), 
+  ERA = median(mlb_data$ERA))
+
+
+
+summary_stat |> kable()
+```
 
 
 # Model {#sec-model}
@@ -118,7 +169,6 @@ Weaknesses and next steps should also be included.
 \newpage
 
 
-# Additional data details
 
 # Model details {#sec-model-details}
 
