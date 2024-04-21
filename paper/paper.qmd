@@ -1,10 +1,10 @@
 ---
-title: "MLB Team Statistics between 2000 - 2010 on Predicting Games Won per Season ^[Code and data are available at: https://github.com/YcartXin/MLB_Team_Stats]"
+title: "MLB Team Statistics Between 2000 to 2010 Build Baysian Model that Predicts Current Standing in the 2024 Season ^[Code and data are available at: https://github.com/YcartXin/MLB_Team_Stats]"
 author: 
   - Tracy Yang
 date: today
 date-format: long
-abstract: "Using Major League Baseball key team statistics between 2000 and 2010, this paper investigates the outcome of the 2024 season using each team's current statistics on predicting their total wins out of 162 games. We also investigate the common conception that baseball is a numbers game by evaluating the predictability of wins that a team would obtain during a seasion from looking at their batting average (AVG), defensive efficiency ratio (DefEff), and earned run average (ERA)."
+abstract: "Using Major League Baseball key team statistics between 2000 and 2010, this paper investigates the outcome of the 2024 season using each team's current statistics on predicting their total wins out of 162 games. We investigate the common conception that baseball is a numbers game by evaluating the predictability of wins that a team would obtain during a seasion from looking at their batting average (BA), defensive efficiency ratio (DefEff), and earned run average (ERA). Despite rules changes in 2023 that may cause inaccuracies in the model, the prediction for current standings from a multiple linear regression model is quite accurate. The findings show that baseball indeed should consider statistics in assessing the competitiveness of a team."
 format: 
   typst:
     toc: true
@@ -25,6 +25,7 @@ library(knitr)
 library(modelsummary)
 
 mlb_data <- read_parquet(here("data/analysis_data/mlb_data.parquet"))
+mlb_2024 <- read_parquet(here("data/analysis_data/mlb_2024.parquet"))
 
 ```
 
@@ -34,35 +35,35 @@ mlb_data <- read_parquet(here("data/analysis_data/mlb_data.parquet"))
 
 # Introduction
 
-Behind the entertaining personalities and eye-catching traditions of baseball is a game where teams and are meticulously crafted with calculation. Baseball's fascination with numbers persisted since its creation (Swhwarz, 2004). Runs scored have always been recorded to evaluate performance, while other statistics developed overtime into the complicated net of data that now reside upon the MLB official site (XX). The term "sabermetrics" even developed to describe in specific baseball statistics (XX) However,in Major League Baseball, a team's performance can differ greatly year to year. A team's last year wins are not often indicative of the coming season. Many factors play into the seasonal performance of a team including more unpredictable variables such as injuries and luck. However, with the common narrative of baseball being a numbers game, we aim to estimate the impact of important statistics of a team on its games won per season in MLB, more specifically, the progressing 2024 season.
+Behind the entertaining personalities and eye-catching traditions of baseball is a game where teams and are meticulously crafted with calculation. Baseball's fascination with numbers persisted since its creation @timeline. Runs scored have always been recorded to evaluate performance, while other statistics developed overtime into the complicated net of data that now reside upon the MLB official site @MLB The term "sabermetrics" even developed to describe in specific baseball statistics @pred However,in Major League Baseball, a team's performance can differ greatly year to year. A team's last year wins are not often indicative of the coming season. Many factors play into the seasonal performance of a team including more unpredictable variables such as injuries and luck. However, with the common narrative of baseball being a numbers game, we aim to estimate the impact of important statistics of a team on its games won per season in MLB, more specifically, the progressing 2024 season.
 
-Important statistics for a team in this paper is defined as the team's batting average (AVG), defensive efficiency ratio (DefEff), and earned run average (ERA). These three statistics each refer to an important aspect of a strong team: hitting, pitching, and fielding prospectively. A baseball team cannot succeed with a weak end in any of the three categories. Therefore, these are important indicators on the estimand - the wins a team would achieve by the end of the 2024 seasons among 162 games. The specifics of these indicators will be elaborated on in @sec-data. Among present research, 2024 season predictions exist, however, they mainly focus on the win for a specific game or series for betting purposes, focusing on the player data. This paper is unique in its approach to predict and investigates the predictability of overall seasonal wins for baseball teams.
+Important statistics for a team in this paper is identified as the team's batting average (BA), defensive efficiency ratio (DefEff), and earned run average (ERA). These three statistics each refer to an important aspect of a strong team: hitting, pitching, and fielding prospectively. A baseball team cannot succeed with a weak end in any of the three categories. Therefore, these are important indicators on the estimand - the wins a team would achieve by the end of the 2024 seasons among 162 games. The specifics of these indicators will be elaborated on in @sec-data. Among present research, 2024 season predictions exist, however, they mainly focus on the win for a specific game or series for betting purposes, focusing on the player data @pred. This paper is unique in its approach to predict and investigates the predictability of overall seasonal wins for baseball teams.
 
-The rest of the paper is structured as follows. @sec-data (Data) will explain the source of the data used, its collection process, and the process of cleaning that led to the final data used. The data section will also explore the potential biases the collected and final data may possess. @sec-model...
+The rest of the paper is structured as follows. @sec-data (Data) explains the source of the data used, its collection process, and the process of cleaning that led to the final data sets used. The data section also explores the potential biases the collected and final data may possess. @sec-model (Model) explains and justifies the model used, then sets up the model using the 2000 - 2010 data. @sec-results (Results) will show the estimated values for the variables of interest and predict wins for the on-going season with the 2024 data. Lastly, @sec-discussion (Discussion) discusses the model coefficients, prediction results, weaknesses in the paper, as well as further possible exploration in the topic.
 
-The overall analysis shows...
+The overall analysis shows that team statistics in MLB is often indicative of the strength of the team and some top contenders in the league can be estimated by team statistics. Furthermore, BA seems to have the most effect on the number of wins a team should accumulate throughout a season among the three predictor variables. However, this investigation cannot validate the ability for current team statistics to predict future success in the same season.
 
 \newpage
 
 # Data {#sec-data}
 
-The data used in this analysis of different statistics on MLB Teams are sourced from Sports Reference, more specifically, Baseball Reference (). The data sets used in this investigation focus on the team statistics of the 30 teams in MLB and span from 2000 to 2010. The data sets were downloaded separately for each year among the batting, pitching, and fielding data. They were then combined into the final data set during the cleaning process. The analysis in this paper will be carried out in **R** @R using packages **tidyverse** @tidyverse, **dplyr** , **ggplot2** @ggplot2, **knitr** @knitr, **here** @here, **arrow** @arrow  XX.
+The data used in this analysis of different statistics on MLB Teams are sourced from Sports Reference, more specifically, Baseball Reference @BR. The data sets used for building the model in this investigation focus on the team statistics of the 30 teams in MLB and span from 2000 to 2010. The data sets were downloaded separately for each year among the batting, pitching, and fielding data. They were then combined into the final data set during the cleaning process. The prediction data of the 2024 season is downloaded in the same way and combined as a separate data set. The analysis in this paper will be carried out in **R** @R using packages **tidyverse** @tidyverse, **modelsummary** @modelsummary, **ggplot2** @ggplot2, **knitr** @knitr, **here** @here, **arrow** @arrow, **rstanarm** @rstanarm.
 
 ## Measurement and Collection
-The data available on Baseball Reference is gathered by many contributors through a variety of sources such as the Lahmen database, and much of older data is accessed from third-party websites such as Retrosheet (). Baseball Reference stores and manipulate the data gathered using MySQL (). A potential weakness in the data collection includes missing data for certain teams, especially for early seasons in the 19th century when statistics were not kept in database and are easily lost. However, this analysis uses recent season data between 2000 and 2010 which mitigates this concern. Years 2000 to 2010 were chosen as this decade avoids the recent disturbances caused by COVID-19 yet is still immediate enough to be good training data for the model to predict the current MLB season.
+The data available on Baseball Reference is provided by the official stats partner of the NBA, NHL, and MLB *Sportsradar* and gathered by many contributors through a variety of sources such as the Lahmen database @BR. Much of older data is accessed from third-party websites such as Retrosheet @BR. Baseball Reference stores and manipulate the data gathered using MySQL @BR. A potential weakness in the data collection includes missing data for certain teams, especially for early seasons in the 19th century when statistics were not kept in database and are easily lost. However, this analysis uses recent season data between 2000 and 2010 which mitigates this concern. Years 2000 to 2010 were chosen as this decade avoids the recent disturbances caused by COVID-19 yet is still immediate enough to be good training data for the model to predict the current MLB season.
 
-There are in total 33 raw data sets of MLB team statistics in the raw data folder for constructing the model, these are split into 11 years and 3 categories (batting, pitching, fielding) for each team of every year from 2000 to 2010. Among each category, one representative indicator is chosen to demonstrate the overall strength of that category and be included as a variable for predicting wins over a season. 
+There are in total 36 raw data sets of MLB team statistics in the raw data folder for constructing the model. The 33 for model building are split into 11 years and 3 categories (batting, pitching, fielding) for each team of every year from 2000 to 2010. The other three consist of the same categories but of 2024. Note that the statistics used for prediction in this paper is sourced on April 20th and is only representative of the statistics from games prior. Among each category, one representative indicator is chosen to demonstrate the overall strength of that category and be included as a variable for predicting wins over a season. 
 
-The batting data in a year contains 29 variables detailing the overall offensive strength of hitters in each team. These variables include average runs per game or 2nd base reached over a season. Among these variables, we are interested in the batting average (**AVG**). AVG is calculated by total hits divided by total at-bats. Hits is defined by the number of times a batter strikes the ball into fair territory and reaches base, in the absence of an error or a fielder's choice (). AVG is a good indicator for offensive capabilities as it minimizes the impact of the pitcher by discounting walks and it is one of the universal tools to measure a hitter's success.
+The batting data in a year contains 29 variables detailing the overall offensive strength of hitters in each team. These variables include average runs per game or 2nd base reached over a season. Among these variables, we are interested in the batting average (**BA**). BA is calculated by total hits divided by total at-bats. Hits is defined by the number of times a batter strikes the ball into fair territory and reaches base, in the absence of an error or a fielder's choice @MLB. BA is a good indicator for offensive capabilities as it minimizes the impact of the pitcher by discounting walks and it is one of the universal tools to measure a hitter's success.
 
-The pitching data in a year contains 36 variables for each team detailing the bullpen's strength in initiating outs and preventing runs. Among variables in the data, we are interested in the Earned Run Average (**ERA**) calculated by 9 x earned runs/innings pitched (). This number indicates the average earned runs allowed per 9 innings, which is better for a team if lower. This indicator tests the fundamental purpose of pitchers in the bullpen as their goal is to prevent runs of the opposing team and accurately portrays the pitching ability of a team.
+The pitching data in a year contains 36 variables for each team detailing the bullpen's strength in initiating outs and preventing runs. Among variables in the data, we are interested in the Earned Run Average (**ERA**) calculated by 9 x earned runs/innings pitched @MLB. This number indicates the average earned runs allowed per 9 innings, which is better for a team if lower. This indicator tests the fundamental purpose of pitchers in the bullpen as their goal is to prevent runs of the opposing team and accurately portrays the pitching ability of a team.
 
-The fielding data for each year contains 16 variables that details the defensive abilities of a team to get the hitter out after a ball is in play. The variable chosen to represent this ability is Defensive Efficiency (**DefEff**), calculated by 1 - (H^[H = Hit] + ROE^[ROE = Reached on Error, when a batter reaches base due to a defensive error] - HR^[HR = Home Run]) / (PA^[PA = Plate Appearance] - BB^[BB = Base on Balls, better known as a walk which happens when the pitcher receives 4 balls from the umpire] - SO^[SO = Strike Out, when the batter is out of play from three strikes from the umpire] - HBP^[HBP = Hit By Pitch, when a batter is struck directly by a pitch without swinging and is awarded a walk] - HR), which is the percentage of balls in play converted into outs (). This indicator estimates the ability of the catcher and fielders to efficiently prevent runs after a ball allows hitters to reach base and home.
+The fielding data for each year contains 16 variables that details the defensive abilities of a team to get the hitter out after a ball is in play. The variable chosen to represent this ability is Defensive Efficiency (**DefEff**), calculated by 1 - (H^[H = Hit] + ROE^[ROE = Reached on Error, when a batter reaches base due to a defensive error] - HR^[HR = Home Run]) / (PA^[PA = Plate Appearance] - BB^[BB = Base on Balls, better known as a walk which happens when the pitcher receives 4 balls from the umpire] - SO^[SO = Strike Out, when the batter is out of play from three strikes from the umpire] - HBP^[HBP = Hit By Pitch, when a batter is struck directly by a pitch without swinging and is awarded a walk] - HR), which is the percentage of balls in play converted into outs @MLB. This indicator estimates the ability of the catcher and fielders to efficiently prevent runs after a ball allows hitters to reach base and home.
 
 
 ## Cleaning and Exploration ##
 
-The cleaned data now contains 330 observations of 5 variables:
+There are two cleaned data sets. The data set for model building contains 330 observations while the one for predicting contains 30. They both include 5 variables:
 
 - Team (Tm)
 - Batting Average (BA) - hits over at bats
@@ -71,15 +72,16 @@ The cleaned data now contains 330 observations of 5 variables:
 - Wins (w)
 
 There are thirty data points per year as there are thirty teams in MLB. The predictor variables are batting average, earned average, and defensive efficiency. Team names is necessary to identify teams throughout the years and the number of wins is imported in with the pitching data. @tbl-sample shows a sample of the the cleaned data with 5 variables.
+
 ```{r}
 #| echo: false
 #| label: tbl-sample
 #| tbl-cap: Sample of Cleaned MLB Prediction Data for Model Building
-mlb_data |> slice(1:8) |> kable()
+mlb_data |> slice(1:6) |> kable()
 
 ```
 
-We can understand this data better by understanding the distribution of some of the variables. For instance, we can understand the competitiveness of MLB by seeing the distribution of wins per season, whether the teams differ significantly by wins can help us analyze whether there is a significant disparity in the strengths of different teams. @fig-wins shows the distribution of the wins data of each team among 162 games in a season between 2000 to 2010.
+We can understand the model building data set better by understanding the distribution of some of the variables. For instance, we can understand the competitiveness of MLB by seeing the distribution of wins per season, whether the teams differ significantly by wins can help us analyze whether there is a significant disparity in the strengths of different teams. @fig-wins shows the distribution of the wins data of each team among 162 games in a season between 2000 to 2010.
 
 ```{r}
 #| echo: false
@@ -122,6 +124,38 @@ summary_stat |> kable()
 ```
 The mean and median of batting average are very close at around 0.264. This means that on average between 2000 to 2010, a MLB batter has 26.4% probability of getting a hit when at bat. The defensive efficiency is once again very similar between mean and median at around 0.690. MLB teams' defense against against a ball in play is quite strong, with around 69% of batters end up as outs when a ball is in play. However, the mean of earned run average is slightly higher than the median at around 4.39 compared to 4.35. This shows that there are some pitchers with very low ERAs that skew the mean to be lower. An average MLB pitcher between 2000 and 2010 overall allows around 4.39 runs per 9 innings.
 
+Furthermore, we can see the relationship between the predictor variables by regressing the number of wins on each as shown in @fig-reg.
+
+```{r, fig.width = 2.8, fig.height = 2.3}
+#| echo: false
+#| fig-cap: Regressions of Number of Wins on each Predictor Variable
+#| label: fig-reg
+#| fig-subcap: ["Wins on BA", "Wins on DefEff", "Wins on ERA"]
+#| layout-ncol: 2
+
+mlb_data |>
+  ggplot(mapping = aes(x = BA, y = W)) +
+  geom_point(color = "steelblue", size = 1) +
+  theme_minimal() +
+  labs(x = "Batting Average", y = "Wins")
+
+mlb_data |>
+  ggplot(mapping = aes(x = DefEff, y = W)) +
+  geom_point(color = "steelblue", size = 1) +
+  theme_minimal() +
+  labs(x = "DefEff", y = "Wins")
+
+mlb_data |>
+  ggplot(mapping = aes(x = ERA, y = W)) +
+  geom_point(color = "steelblue", size = 1) +
+  theme_minimal() +
+  labs(x = "Earned Run Average", y = "Wins")
+
+```
+
+From @fig-reg, we can see that both batting average and defensive efficiency have positive relationships with the number of wins for a team. The directions for both graphs seem to be similar, even though DefEff has a more middle-concentrated data spread. This may suggest a stronger relationship for BA than DefEff. For earned run average, there is a clear negative trend which suggests that pitchers are of high importance in ensuring wins in baseball. However, this relationship is also expected as a high ERA for the team would mean that many points were scored against the team which is a more direct indication of losses than runs or good defensive plays.
+
+
 \newpage
 
 # Model {#sec-model}
@@ -145,11 +179,13 @@ $\sigma \sim \mbox{Exponential}(1)$
 
 ### Model justification {#sec-justification}
 
-A positive relationship is expected between batting average and number of wins as a higher batting average for a team signals a stronger offense which leads to runs. We also expect a positive relationship between defensive efficiency as a higher percentage indicates a higher prevention of runs and should lead to more wins. Lastly, a negative relationship between earned run average and wins is expected because a lower ERA means that the pitchers effectively prevented the opposite team from scoring runs. 
+From @fig-reg, a positive linear relationship is expected between batting average and number of wins as a higher batting average for a team signals a stronger offense which leads to runs. We also expect a positive relationship between defensive efficiency as a higher percentage indicates a higher prevention of runs and should lead to more wins. Lastly, a negative relationship between earned run average and wins is expected because a lower ERA means that the pitchers effectively prevented the opposite team from scoring runs. 
 
-The model is ran using the *rstanarm* package (XX). The priors are assumed as rstanarm defaults. However, they are auto scaled based on the available 2000 - 2010 data.
+The model is ran using the **rstanarm** package. The priors are assumed as rstanarm defaults. However, they are auto scaled based on the available 2000 - 2010 data.
 
-# Results
+\newpage
+
+# Results {#sec-results}
 
 ```{r}
 #| include: false
@@ -159,8 +195,7 @@ The model is ran using the *rstanarm* package (XX). The priors are assumed as rs
 mlb_model <- readRDS(here(file = "models/model.rds"))
 ```
 
-The coefficients specified in the multiple regression model in @sec-setup are shown in @tbl-modelsum below. Our results are summarized in .
-
+The coefficient variables specified in the multiple regression model in @sec-setup are shown in @tbl-modelsum below.
 
 ```{r}
 #| echo: false
@@ -169,50 +204,102 @@ The coefficients specified in the multiple regression model in @sec-setup are sh
 #| label: tbl-modelsum
 #| tbl-cap: Model of Team Wins per MLB Season based on Team Statistics
 
-modelsummary(list("auto-scaling priors" = mlb_model))
+modelsummary(list("posterior estimates" = mlb_model))
 
 ```
 
+The intercept is estimated in the model as -18.205. This does not make much sense as it indicates that a team with BA, DefEff, and ERA of 0 would have -18.205 wins which is not possible.
+
+The 586.508 for $\beta_1$ is a much higher than the other beta variables. The stronger relationship is also suggested by @fig-reg where there exists a more consistent positive correlation.
+
+The coefficient variable for DefEff is 24.2. Although the positive value is expected, the large difference between this coefficient and that of BA may suggest that offensive strength is more important than defensive strength for a MLB team.
+
+$\beta_3$ is estimated to be around -16.557. The negative relationship is once again expected. However, since earned run average has a direct relationship with runs instead of hits from BA and DefEff, it would make sense to anticipate a lower value.
+
+```{r}
+#| echo: false
+#| label: tbl-pred
+#| tbl-cap: Top Five Teams for Predicted Wins of the 2024 Season
+
+pred <- c(mlb_model |> predict(newdata = mlb_2024) |> round())
+mlb_pred <- cbind(mlb_2024, pred) 
+mlb <- mlb_pred |> select(Tm, pred)
+rank <- mlb[order(-mlb$pred),] |> select(Tm, pred)
+rownames(rank) <- NULL
+rank |> slice(1:5) |> kable()
+```
+
+Using the model specified in @sec-setup, the current 2024 team statistics are used to predict the five teams with the highest number of wins in the league by the end of the season. @tbl-pred shows that the five teams are the Atlanta Braves, Milwaukee Brewers, Cleveland Guardians, New York Mets, and Kansas City Royals in this order.
+
+We can verify this prediction with the current (as of April 20th) MLB standings @BR. 
+
+- The Atlanta Braves are currently tied with the New York Yankees at second with 14 wins
+- The Milwaukee Brewers is tied with Kansas City Royals and three other teams at third with 13 wins
+- The Cleveland Guardians leads the league at first with 15 wins
+- The New York Mets is tied with four other teams at fourth with 12 wins
 
 
+# Discussion {#sec-discussion}
 
-# Discussion
+## Coefficient estimates
 
-## First discussion point {#sec-first-point}
+From @tbl-modelsum, we see that batting average has a much higher effect on the number of wins than defensive efficiency or earned run average. This can be interpreted as the importance of offense showing through the statistics. For both DefEff and ERA, when successful, would prevent the opposing team form scoring runs. However, baseball is a game for which the team with the higher number of runs win. This means that strong defense is ineffectual without offense, and that a strong offensive team can at times mitigate lacking in fielding or pitching and result in wins. This effect is captured by the high coefficient estimate for BA in the model. Furthermore, frequent hits and runs puts mental pressure on the other team and effect their performance, a lead can often drive a game in a certain direction.
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
+On the other hand, as both DefEff and ERA captures the defensive abilities of a team, their coefficients would share the effects of keeping the other team at low or zero runs. These coefficients thus in comparison, more moderate than the batting average's.
 
 
-## Weaknesses and next steps
+## Is baseball predictable by numbers {#sec-wins}
 
-Weaknesses and next steps should also be included.
-Weaknesses: irregular start for some teams, pitching clock
+The predictions made in @sec-results are not exactly the ranking of the MLB teams. However, the current league leader Cleveland Guardians is one of the predicted top fives total wins. The other teams predicted are also not far from the top. The least games won out of the five is New York Mets which has 12 wins and tied with four other teams at fourth. Considering that there are 30 teams and the rankings can drop quiet fast, the predicted teams clearly are comparatively strong teams in the league.
+
+We can look at the distribution of the predicted wins in @fig-wins2024 to further analyze the model.
+
+```{r}
+#| echo: false
+#| label: fig-wins2024
+#| fig-cap: Distribution of Wins of each Team in a MLB 2024 Season
+
+rank |>
+  ggplot(aes(x = pred)) +
+  geom_histogram(binwidth =  7, fill = "steelblue", alpha = 0.9, color = "white") +
+  theme_minimal() +
+  labs(
+    x = "Wins",
+    y = "Number of occurrences"
+  )
+
+```
+@fig-wins2024 differs from the collected distribution data from 2000 to 2010 in @fig-wins with a higher frequency distribution on both ends in comparison to the middle. @fig-wins resembles more like a Normal distribution although slightly skewed. @fig-wins2024 loses the resemblance to a Normal curve with a more even distribution. However, this is expected as there are only 30 data points in the predicted wins in comparison to the 330 that were collected.
+
+We can further check the reliability of the model by comparing the overall predicted number of wins in the league in comparison to the number of wins there should be in @tbl-total.
+
+```{r}
+#| echo: false
+#| label: tbl-total
+#| tbl-cap: Total Wins Predicted VS. Real Total Wins per Season
+total <- sum(rank$pred)
+real_total <- 81*30
+table <- data.frame(total, real_total)
+table |> kable()
+```
+
+Since whenever two teams play against each other there is always a winner, there should be a total number of wins a league should have by the end of the season. 162/2*30 = 2430 The total wins predicted in the 2024 season is 2172. The model under-predicted the number of wins there should be in the league. However, looking at @fig-wins2024, we can see that the frequency of high wins is quite high. This means that the model severely under-estimated the wins of some teams that should be ranked more in the middle and slightly over-estimated some teams that should have less wins. Other the other hand, it may just be the fact that team statistics have not yet stabilized at a reasonable value with the limited number of games in the season.
+
+## Weaknesses
+
+There are a few weaknesses in the process of this investigation. Firstly, as we are using very early season data, there are many ties between teams in terms of number of wins and many teams have yet to display their true abilities. Each team has so far played around 20 games which is not enough to determine the direction for the rest of the season yet. Many players may have an irregular start in comparison to their last year statistics. The more data we have on the games each team plays, the team statistics would be updated and are more likely to be consistent with the accurate value.
+
+Furthermore, this analysis matched the currently standings to the predictions made by the current statistics in the league. Therefore, the teams with better statistics should naturally have more wins. The predictions made by the model indicates that team statistics in many ways is representative of the strengths of the team. However, it does not validate the ability that current baseball statistics can predict for wins for the whole season.
+
+Another weakness of this investigation is an important rule change implemented in MLB in 2023. The league added pitch timer that restricts the time that pitchers have in between pitches in order to increase the pace of play @MLB. This means that pitchers do not have the liberty to relax and prepare as much as they did before. This change may cause inaccuracies in the model by increasing/decreasing the estimate of ERA. However, there is not enough data since the rule change to build a model on so far.
+
+
+## Next Steps
+This analysis can be further developed by exploring the predictability of future wins based on a stable early season data. More specifically, analysis should be done by obtaining data after around 40 games for all teams and note down the predicted top winners in MLB at the end of the season to match the predictions made prior. By conducting such research over a few years, we would have a better idea of whether league winners show by statistics by a quarter of the season.
+
+Another way to explore MLB team predictions in depth is to consider the individual players statistics instead of team statistics. The team statistics likely overlooks the importance of a few individual key players and favour teams with an overall more even and higher batting, fielding, or pitching statistics. However, baseball games can be determined by one hit or defensive catch and individual statistics would better capture the true abilities of the team.
 
 \newpage
 
-
-
-# Model details {#sec-model-details}
-
-## Posterior predictive check
-
-In 1 we implement a posterior predictive check. This shows...
-
-In 2 we compare the posterior with the prior. This shows... 
-
-
-
-## Diagnostics
-
-is a trace plot. It shows... This suggests...
-
- is a Rhat plot. It shows... This suggests...
-
-
-
-\newpage
-
-
-# References
 
 
