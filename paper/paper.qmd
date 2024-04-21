@@ -1,10 +1,10 @@
 ---
-title: "MLB Team Statistics between 2000 - 2023 on Predicting Games Won per Season ^[Code and data are available at: https://github.com/YcartXin/MLB_Team_Stats]"
+title: "MLB Team Statistics between 2000 - 2010 on Predicting Games Won per Season ^[Code and data are available at: https://github.com/YcartXin/MLB_Team_Stats]"
 author: 
   - Tracy Yang
 date: today
 date-format: long
-abstract: "Using Major League Baseball key team statistics between 2000 and 2023, this paper investigates the outcome of the 2024 season using each team's current statistics on predicting their total wins out of 162 games. We also investigate the common conception that baseball is a numbers game by evaluating the predictability of wins that a team would obtain during a seasion from looking at their batting average (AVG), defensive efficiency ratio (DefEff), and earned run average (ERA)."
+abstract: "Using Major League Baseball key team statistics between 2000 and 2010, this paper investigates the outcome of the 2024 season using each team's current statistics on predicting their total wins out of 162 games. We also investigate the common conception that baseball is a numbers game by evaluating the predictability of wins that a team would obtain during a seasion from looking at their batting average (AVG), defensive efficiency ratio (DefEff), and earned run average (ERA)."
 format: 
   typst:
     toc: true
@@ -16,10 +16,13 @@ bibliography: references.bib
 #| warning: false
 #| message: false
 
+#install.packages("modelsummary")
+
 library(tidyverse)
 library(here)
 library(arrow)
 library(knitr)
+library(modelsummary)
 
 mlb_data <- read_parquet(here("data/analysis_data/mlb_data.parquet"))
 
@@ -43,10 +46,10 @@ The overall analysis shows...
 
 # Data {#sec-data}
 
-The data used in this analysis of different statistics on MLB Teams are sourced from Sports Reference, more specifically, Baseball Reference (). The data sets used in this investigation focus on the team statistics of the 30 teams in MLB and span from 2000 to 2010. The data sets were downloaded separately for each year among the batting, pitching, and fielding data. They were then combined into the final data set during the cleaning process. This cleaning and analysis are carried out in **R** @R using packages **tidyverse** @tidyverse, **dplyr** , **ggplot2** @ggplot2, **knitr** @knitr, **here ** @here, **dplyr** @dplyr, **janitor** @janitor, **arrow** @arrow  XX.
+The data used in this analysis of different statistics on MLB Teams are sourced from Sports Reference, more specifically, Baseball Reference (). The data sets used in this investigation focus on the team statistics of the 30 teams in MLB and span from 2000 to 2010. The data sets were downloaded separately for each year among the batting, pitching, and fielding data. They were then combined into the final data set during the cleaning process. The analysis in this paper will be carried out in **R** @R using packages **tidyverse** @tidyverse, **dplyr** , **ggplot2** @ggplot2, **knitr** @knitr, **here** @here, **arrow** @arrow  XX.
 
 ## Measurement and Collection
-The data available on Baseball Reference is gathered by many contributors through a variety of sources such as the Lahmen database, and much of older data is accessed from third-party websites such as Retrosheet (). Baseball Reference stores and manipulate the data gathered using MySQL (). A potential weakness in the data collection includes missing data for certain teams, especially for early seasons in the 19th century when statistics were not kept in database and are easily lost. However, this analysis uses recent season data between 2000 and 2010 which mitigates this concern.
+The data available on Baseball Reference is gathered by many contributors through a variety of sources such as the Lahmen database, and much of older data is accessed from third-party websites such as Retrosheet (). Baseball Reference stores and manipulate the data gathered using MySQL (). A potential weakness in the data collection includes missing data for certain teams, especially for early seasons in the 19th century when statistics were not kept in database and are easily lost. However, this analysis uses recent season data between 2000 and 2010 which mitigates this concern. Years 2000 to 2010 were chosen as this decade avoids the recent disturbances caused by COVID-19 yet is still immediate enough to be good training data for the model to predict the current MLB season.
 
 There are in total 33 raw data sets of MLB team statistics in the raw data folder for constructing the model, these are split into 11 years and 3 categories (batting, pitching, fielding) for each team of every year from 2000 to 2010. Among each category, one representative indicator is chosen to demonstrate the overall strength of that category and be included as a variable for predicting wins over a season. 
 
@@ -61,22 +64,22 @@ The fielding data for each year contains 16 variables that details the defensive
 
 The cleaned data now contains 330 observations of 5 variables:
 
-- Team
-- Batting Average - hits over at bats
-- Defensive Efficiency - out rate after a ball is in play
-- Earned Run Average - average earned runs allowed per none innings
-- Wins
+- Team (Tm)
+- Batting Average (BA) - hits over at bats
+- Defensive Efficiency (DefEff) - out rate after a ball is in play
+- Earned Run Average (ERA) - average earned runs allowed per none innings
+- Wins (w)
 
 There are thirty data points per year as there are thirty teams in MLB. The predictor variables are batting average, earned average, and defensive efficiency. Team names is necessary to identify teams throughout the years and the number of wins is imported in with the pitching data. @tbl-sample shows a sample of the the cleaned data with 5 variables.
 ```{r}
 #| echo: false
 #| label: tbl-sample
 #| tbl-cap: Sample of Cleaned MLB Prediction Data for Model Building
-mlb_data |> slice(1:5) |> kable()
+mlb_data |> slice(1:8) |> kable()
 
 ```
 
-We can understand this data better by understanding the distribution of some of the variables as well as the summary statistics. For instance, we can understand the competitiveness of MLB by seeing the distribution of wins per season, whether the teams differ significantly by wins can help us analyze whether there is a significant disparity in the strengths of different teams. @fig-wins shows the distribution of the wins data of each team among 162 games in a season between 2000 to 2010.
+We can understand this data better by understanding the distribution of some of the variables. For instance, we can understand the competitiveness of MLB by seeing the distribution of wins per season, whether the teams differ significantly by wins can help us analyze whether there is a significant disparity in the strengths of different teams. @fig-wins shows the distribution of the wins data of each team among 162 games in a season between 2000 to 2010.
 
 ```{r}
 #| echo: false
@@ -93,7 +96,9 @@ mlb_data |>
   )
 
 ```
-We can also get a sense of the average strength of the a MLB team in terms of the predictors by looking at their summary data. This is shown in @tbl-summary.
+With 162 games per season, 50% win rate would count to 81 wins. However, @fig-wins shows that the highest frequencies lie around 85 to 90. This means that the distribution of wins over the 11 years is slightly skewed to the left.The teams in the league are generally quite competitive and close in wins, though, there are some weaker teams that stray further from 50% win rate.
+
+The data can be further explored with summary statistics. We can get a sense of the average strength of the a MLB team in terms of the three predictors by looking at their summary data. This is shown in @tbl-summary.
 
 ```{r}
 #| echo: false
@@ -112,45 +117,61 @@ summary_stat <- summary_stat |> add_row(
   DefEff = median(mlb_data$DefEff), 
   ERA = median(mlb_data$ERA))
 
-
-
 summary_stat |> kable()
-```
 
+```
+The mean and median of batting average are very close at around 0.264. This means that on average between 2000 to 2010, a MLB batter has 26.4% probability of getting a hit when at bat. The defensive efficiency is once again very similar between mean and median at around 0.690. MLB teams' defense against against a ball in play is quite strong, with around 69% of batters end up as outs when a ball is in play. However, the mean of earned run average is slightly higher than the median at around 4.39 compared to 4.35. This shows that there are some pitchers with very low ERAs that skew the mean to be lower. An average MLB pitcher between 2000 and 2010 overall allows around 4.39 runs per 9 innings.
+
+\newpage
 
 # Model {#sec-model}
 
-The goal of our modelling strategy is twofold. Firstly,...
+There are two steps to the use of modeling in this paper. This paper will be utilizing a multiple linear regression containing three predictor variables to model their effects on the number of wins out of 162 for a MLB team. Subsequently, the model will be used to inference the team with the most wins in MLB in the 2024 season with their current team stats on batting average, defensive efficiency, and earned run average.
 
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix ].
+@sec-setup @sec-justification will expand on the Bayesian analysis model and details of the multiple linear regression. 
 
-## Model set-up
+## Model set-up {#sec-setup}
 
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
+Define $y_i$ as the number of wins a team would have by the end of 162 games. Subsequently, $\beta_0$ is the coefficient for the intercept and $\beta_1, \beta_2, \beta_3$ are respectively defined as the effect that batting average, defensive efficiency, and earned run average has on $y_i$ to be estimated. 
 
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
-
+$y_i|\mu_i, \sigma \sim \mbox{Normal}(\mu_i, \sigma)$\
+$\mu_i = \beta_0 + \beta_1\mbox{BA}_i + \beta_2\mbox{DefEff}_i + \beta_3\mbox{ERA}_i$\
+$\beta_0 \sim \mbox{Normal}(0, 2.5)$\
+$\beta_1 \sim \mbox{Normal}(0, 2.5)$\
+$\beta_2 \sim \mbox{Normal}(0, 2.5)$\
+$\beta_3 \sim \mbox{Normal}(0, 2.5)$\
+$\sigma \sim \mbox{Exponential}(1)$
 
 
-### Model justification
+### Model justification {#sec-justification}
 
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
+A positive relationship is expected between batting average and number of wins as a higher batting average for a team signals a stronger offense which leads to runs. We also expect a positive relationship between defensive efficiency as a higher percentage indicates a higher prevention of runs and should lead to more wins. Lastly, a negative relationship between earned run average and wins is expected because a lower ERA means that the pitchers effectively prevented the opposite team from scoring runs. 
 
-We can use maths by including latex between dollar signs, for instance $\theta$.
-
+The model is ran using the *rstanarm* package (XX). The priors are assumed as rstanarm defaults. However, they are auto scaled based on the available 2000 - 2010 data.
 
 # Results
 
-Our results are summarized in .
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+
+mlb_model <- readRDS(here(file = "models/model.rds"))
+```
+
+The coefficients specified in the multiple regression model in @sec-setup are shown in @tbl-modelsum below. Our results are summarized in .
 
 
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: tbl-modelsum
+#| tbl-cap: Model of Team Wins per MLB Season based on Team Statistics
+
+modelsummary(list("auto-scaling priors" = mlb_model))
+
+```
 
 
 
@@ -165,6 +186,7 @@ If my paper were 10 pages, then should be be at least 2.5 pages. The discussion 
 ## Weaknesses and next steps
 
 Weaknesses and next steps should also be included.
+Weaknesses: irregular start for some teams, pitching clock
 
 \newpage
 

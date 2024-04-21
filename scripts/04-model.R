@@ -1,11 +1,10 @@
 #### Preamble ####
-# Purpose: Models... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Models the relationships between three predictor variables on MLB team wins in a season.
+# Author: Tracy Yang
+# Date: 20 April, 2024
+# Contact: ycart.yang@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: 02-data_cleaning
 
 
 #### Workspace setup ####
@@ -13,25 +12,25 @@ library(tidyverse)
 library(rstanarm)
 
 #### Read data ####
-analysis_data <- read_csv("data/analysis_data/analysis_data.csv")
+mlb_data <- read_parquet("data/analysis_data/mlb_data.parquet")
 
 ### Model data ####
-first_model <-
+model <-
   stan_glm(
-    formula = flying_time ~ length + width,
-    data = analysis_data,
+    formula = W ~ BA + DefEff + ERA,
+    data = mlb_data,
     family = gaussian(),
     prior = normal(location = 0, scale = 2.5, autoscale = TRUE),
     prior_intercept = normal(location = 0, scale = 2.5, autoscale = TRUE),
     prior_aux = exponential(rate = 1, autoscale = TRUE),
-    seed = 853
+    seed = 11
   )
 
 
 #### Save model ####
 saveRDS(
-  first_model,
-  file = "models/first_model.rds"
+  model,
+  file = "models/model.rds"
 )
 
 

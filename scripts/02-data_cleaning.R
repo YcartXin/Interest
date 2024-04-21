@@ -71,10 +71,18 @@ b2010 <- read_csv("data/raw_data/2010B.csv")
 f2010 <- read_csv("data/raw_data/2010F.csv")
 p2010 <- read_csv("data/raw_data/2010P.csv")
 data2010 <- cbind(b2010[1:30, c("Tm", "BA")], f2010[1:30, c("DefEff")], p2010[1:30, c("ERA", "W")])
+#2024
+b2024 <- read_csv("data/raw_data/2024B.csv")
+f2024 <- read_csv("data/raw_data/2024F.csv")
+p2024 <- read_csv("data/raw_data/2024P.csv")
+data2024 <- cbind(b2024[1:30, c("Tm", "BA")], f2024[1:30, c("DefEff")], p2024[1:30, c("ERA", "W")])
 
-## Combining yearly data ##
+
+
+## Combining yearly data 2000 - 2010 ##
 mlb_10 <- rbind(data2000, data2001, data2002, data2003, data2004, data2005, 
                 data2006, data2007, data2008, data2009, data2010)
+
 
 ## Cleaning yearly data ##
 current <- c("Arizona Diamondbacks", "Atlanta Braves", "Baltimore Orioles", 
@@ -88,21 +96,29 @@ current <- c("Arizona Diamondbacks", "Atlanta Braves", "Baltimore Orioles",
              "Seattle Mariners", "St. Louis Cardinals", "Tampa Bay Rays", 
              "Texas Rangers", "Toronto Blue Jays", "Washington Nationals", 
              "Montreal Expos", "Tampa Bay Devil Rays",
-             "Los Angeles Angels of Anaheim", "Anaheim Angels")
+             "Los Angeles Angels of Anaheim", "Anaheim Angels", "Cleveland Guardians",
+             "Miami Marlins")
 change <- c("AZ", "ATL", "BAL", "BOS", "CHC", 
            "CWS", "CIN", "CLE", "COL", "DET", 
            "MIA", "HOU", "KC", "LAA", "LAD", 
            "MIL", "MIN", "NYM", "NYY", "OAK", 
            "PHI", "PIT", "SD", "SF", "SEA",
            "STL", "TB", "TEX", "TOR", "WSH", 
-           "WSH", "TB", "LAA", "LAA")
-mlb_10 <- mlb_10 |>
+           "WSH", "TB", "LAA", "LAA", "CLE",
+           "MIA")
+
+mlb_data <- mlb_10 |>
   mutate(Tm = case_when(
     mlb_10$Tm %in% current ~ change[match(mlb_10$Tm, current)],
     TRUE ~ Tm
   ))
 
-mlb_data <- mlb_10
+mlb_2024 <- data2024 |>
+  mutate(Tm = case_when(
+    data2024$Tm %in% current ~ change[match(data2024$Tm, current)],
+    TRUE ~ Tm
+  ))
 
 #### Save data ####
 write_parquet(mlb_data, "data/analysis_data/mlb_data.parquet")
+write_parquet(mlb_2024, "data/analysis_data/mlb_2024.parquet")
